@@ -1,25 +1,48 @@
-// create web server and listen on port 3000
-// to run this file, type: node comments.js
-// to test, open browser and type: http://localhost:3000
+// create web server with nodejs
 
 // load modules
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var Comment = require('./models/comment');
+var Comment = require('./models/comment.js');
 var app = express();
 
-// connect to database
-mongoose.connect('mongodb://localhost/commentDB');
+// connect to mongodb
+mongoose.connect('mongodb://localhost/comment');
 
-// configure body-parser
-app.use(bodyParser.urlencoded({extended: true}));
+// set template engine
+app.set('view engine', 'ejs');
 
-// configure routes
-// serve static file (index.html, images, css)
-app.use(express.static(__dirname + '/views'));
-app.use(express.static(__dirname + '/scripts'));
+// set static files
+app.use(express.static('public'));
 
-// GET /comments - return all comments
-app.get('/comments', function(req, res) {
-  console.log(r
+// use body parser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// set routes
+app.get('/', (req, res) => {
+  Comment.find({}, (err, comments) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render('index', { comments: comments });
+    }
+  });
+});
+
+app.post('/create', (req, res) => {
+  var comment = req.body.comment;
+  Comment.create(comment, (err, comment) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.redirect('/');
+    }
+  });
+});
+
+// start server
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});r with express
