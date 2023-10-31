@@ -3,12 +3,8 @@
 // load modules
 var express = require('express');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var Comment = require('./models/comment.js');
 var app = express();
 
-// connect to mongodb
-mongoose.connect('mongodb://localhost/comment');
 
 // set template engine
 app.set('view engine', 'ejs');
